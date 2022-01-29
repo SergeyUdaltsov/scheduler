@@ -1,0 +1,21 @@
+# IDEA config
+.idea/
+*.iml
+
+# Java build folders
+out/
+build/
+target/
+
+# Logs and binaries
+logs/
+*.log
+*.jar
+*.zip
+*.gz
+
+# Credentials and configuration
+.env
+users.js
+backend.env
+local.properties
