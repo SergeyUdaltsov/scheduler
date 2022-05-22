@@ -4,6 +4,7 @@ import com.scheduler.dao.IContextDao;
 import com.scheduler.dao.IDynamoDbFactory;
 import com.scheduler.model.CommandType;
 import com.scheduler.model.Context;
+import com.scheduler.model.Language;
 
 import java.util.Map;
 
@@ -11,11 +12,16 @@ import java.util.Map;
  * @author Serhii_Udaltsov on 4/10/2021
  */
 public class ContextDao extends BaseDao<Context> implements IContextDao {
-    private IDynamoDbFactory dynamoDbFactory;
 
     public ContextDao(IDynamoDbFactory dynamoDbFactory) {
         super(dynamoDbFactory, Context.class);
-        this.dynamoDbFactory = dynamoDbFactory;
+    }
+
+    @Override
+    public void updateLocale(long id, Language language) {
+        Context context = getContext(id);
+        context.setLanguage(language);
+        save(context);
     }
 
     @Override

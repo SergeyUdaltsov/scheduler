@@ -3,24 +3,14 @@ package com.scheduler.dagger;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.scheduler.dao.IBillDao;
-import com.scheduler.dao.ICollectPaymentDao;
 import com.scheduler.dao.IContextDao;
 import com.scheduler.dao.IDynamoDbFactory;
-import com.scheduler.dao.IPaymentDao;
-import com.scheduler.dao.IPlayerDao;
 import com.scheduler.dao.ISettingDao;
-import com.scheduler.dao.ITransferDao;
 import com.scheduler.dao.IUserDao;
 import com.scheduler.dao.IUserSessionDao;
-import com.scheduler.dao.impl.BillDao;
-import com.scheduler.dao.impl.CollectPaymentDao;
 import com.scheduler.dao.impl.ContextDao;
 import com.scheduler.dao.impl.DynamoDbFactory;
-import com.scheduler.dao.impl.PaymentDao;
-import com.scheduler.dao.impl.PlayerDao;
 import com.scheduler.dao.impl.SettingDao;
-import com.scheduler.dao.impl.TransferDao;
 import com.scheduler.dao.impl.UserDao;
 import com.scheduler.dao.impl.UserSessionDao;
 import dagger.Module;
@@ -56,32 +46,8 @@ public class DaggerDaoProvider {
 
     @Provides
     @Singleton
-    public IPlayerDao playerDao(IDynamoDbFactory dynamoDbFactory) {
-        return new PlayerDao(dynamoDbFactory);
-    }
-
-    @Provides
-    @Singleton
     public IContextDao contextDao(IDynamoDbFactory dynamoDbFactory) {
         return new ContextDao(dynamoDbFactory);
-    }
-
-    @Provides
-    @Singleton
-    public IPaymentDao paymentDao(IDynamoDbFactory dynamoDbFactory) {
-        return new PaymentDao(dynamoDbFactory);
-    }
-
-    @Provides
-    @Singleton
-    public IBillDao billDao(IDynamoDbFactory dynamoDbFactory) {
-        return new BillDao(dynamoDbFactory);
-    }
-
-    @Provides
-    @Singleton
-    public ITransferDao transferDao(IDynamoDbFactory dynamoDbFactory) {
-        return  new TransferDao(dynamoDbFactory);
     }
 
     @Provides
@@ -102,9 +68,4 @@ public class DaggerDaoProvider {
         return new UserSessionDao(dynamoDbFactory);
     }
 
-    @Provides
-    @Singleton
-    public ICollectPaymentDao collectPaymentDao(IDynamoDbFactory dynamoDbFactory) {
-        return new CollectPaymentDao(dynamoDbFactory);
-    }
 }

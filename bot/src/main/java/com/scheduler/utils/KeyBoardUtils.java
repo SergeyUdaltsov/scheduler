@@ -15,7 +15,8 @@ import java.util.Map;
  * @author Serhii_Udaltsov on 4/8/2021
  */
 public class KeyBoardUtils {
-    public static InlineKeyboardMarkup buildKeyboard(Map<String, String> buttonsMap, KeyBoardType type) {
+
+    public static InlineKeyboardMarkup buildInlineKeyboard(Map<String, String> buttonsMap, KeyBoardType type) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -51,6 +52,7 @@ public class KeyBoardUtils {
             rows.add(row);
         }
         keyboard.setKeyboard(rows);
+        keyboard.setOneTimeKeyboard(true);
         return keyboard;
     }
 

@@ -3,13 +3,11 @@ package com.scheduler.service.impl;
 import com.scheduler.dao.IContextDao;
 import com.scheduler.model.CommandType;
 import com.scheduler.model.Context;
+import com.scheduler.model.Language;
 import com.scheduler.service.IContextService;
-import com.scheduler.utils.CollectionUtils;
 import com.scheduler.utils.MessageUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +27,11 @@ public class ContextService implements IContextService {
     }
 
     @Override
+    public void updateLocale(long id, Language language) {
+        contextDao.updateLocale(id, language);
+    }
+
+    @Override
     public void updateContextParams(Update update, Map<String, Object> params) {
         Context context = getContext(update);
         context.getParams().putAll(params);
@@ -40,6 +43,14 @@ public class ContextService implements IContextService {
         Context context = contextDao.getContext(chatId);
         context.getParams().putAll(params);
         save(context);
+    }
+
+    @Override
+    public String getMessageText(Update update) {
+        if (update.getCallbackQuery() != null) {
+            return update.getCallbackQuery().getData();
+        }
+        return update.getMessage().getText();
     }
 
     @Override
@@ -55,32 +66,6 @@ public class ContextService implements IContextService {
     }
 
     @Override
-    public void clearContext(Update update) {
-        Context context = new Context();
-        context.setLocation(Collections.singletonList(CommandType.DASHBOARD_PROCESSOR));
-        context.setUserId(MessageUtils.getUserIdFromUpdate(update));
-        context.setParams(Collections.emptyMap());
-        save(context);
-    }
-
-    @Override
-    public CommandType getPreviousCommandTypeAndSaveLocation(Context context) {
-        List<CommandType> location = context.getLocation();
-        List<CommandType> updatedLocation = CollectionUtils.removeLastElements(location, 2);
-        context.setLocation(updatedLocation);
-        save(context);
-        return CollectionUtils.getLastElement(updatedLocation);
-    }
-
-    @Override
-    public void updateContextLocation(Update update, CommandType type) {
-        Context context = getContext(update);
-        List<CommandType> location = context.getLocation();
-        location.add(type);
-        save(context);
-    }
-
-    @Override
     public String getMessageTextOrDefault(Update update, String paramKey) {
         String text = update.getMessage().getText();
         return text.equalsIgnoreCase("назад")
@@ -89,11 +74,18 @@ public class ContextService implements IContextService {
     }
 
     @Override
+    public void updateContextCommands(Map<String, String> commands, Update update) {
+        Context contextFromDb = getContext(update);
+        contextFromDb.setCommands(commands);
+        contextDao.save(contextFromDb);
+    }
+
+    @Override
     public Context getContext(Update update) {
         if (update == null) {
             return null;
         }
-        Long userId = update.getMessage().getFrom().getId();
+        long userId = MessageUtils.getUserIdFromUpdate(update);
         return contextDao.getContext(userId);
     }
 

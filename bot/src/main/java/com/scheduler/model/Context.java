@@ -1,15 +1,13 @@
 package com.scheduler.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedJson;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.scheduler.utils.CommandTypeConverter;
 import com.scheduler.utils.MapObjectConverter;
+import com.scheduler.utils.MapStringConverter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -19,8 +17,8 @@ import java.util.Map;
 public class Context {
     public static final String HASH_KEY = "id";
     public static final String PARAMS_FIELD = "p";
-    public static final String LOCATION_FIELD = "l";
-    public static final String COLLECT_FIELD = "col";
+    public static final String LOCALE_FIELD = "l";
+    public static final String COMMANDS_FIELD = "c";
 
     @DynamoDBHashKey(attributeName = HASH_KEY)
     private long userId;
@@ -29,21 +27,21 @@ public class Context {
     @DynamoDBTypeConverted(converter = MapObjectConverter.class)
     private Map<String, Object> params;
 
-    @DynamoDBTypeConverted(converter = CommandTypeConverter.class)
-    @DynamoDBAttribute(attributeName = LOCATION_FIELD)
-    private List<CommandType> location = new ArrayList<>();
+    @DynamoDBAttribute(attributeName = LOCALE_FIELD)
+    @DynamoDBTypeConvertedEnum
+    private Language language;
 
-    @DynamoDBTypeConvertedJson
-    @DynamoDBAttribute(attributeName = COLLECT_FIELD)
-    private List<Map<String, Object>> collect = new ArrayList<>();
+    @DynamoDBAttribute(attributeName = COMMANDS_FIELD)
+    @DynamoDBTypeConverted(converter = MapStringConverter.class)
+    private Map<String, String> commands;
 
     public Context() {
     }
 
-    public Context(int userId, Map<String, Object> params, List<CommandType> location) {
+    public Context(int userId, Map<String, Object> params, Language language) {
         this.userId = userId;
         this.params = params;
-        this.location = location;
+        this.language = language;
     }
 
     public long getUserId() {
@@ -62,19 +60,19 @@ public class Context {
         this.params = params;
     }
 
-    public List<CommandType> getLocation() {
-        return location;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setLocation(List<CommandType> location) {
-        this.location = location;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
-    public List<Map<String, Object>> getCollect() {
-        return collect;
+    public Map<String, String> getCommands() {
+        return commands;
     }
 
-    public void setCollect(List<Map<String, Object>> collect) {
-        this.collect = collect;
+    public void setCommands(Map<String, String> commands) {
+        this.commands = commands;
     }
 }

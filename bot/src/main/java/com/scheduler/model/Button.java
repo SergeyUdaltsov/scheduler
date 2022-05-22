@@ -6,10 +6,12 @@ package com.scheduler.model;
 public class Button {
     private String value;
     private boolean checkable;
+    private String callback;
 
-    public Button(String value, boolean checkable) {
+    public Button(String value, boolean checkable, String callback) {
         this.value = value;
         this.checkable = checkable;
+        this.callback = callback;
     }
 
     public static Builder builder() {
@@ -32,9 +34,18 @@ public class Button {
         this.checkable = checkable;
     }
 
+    public String getCallback() {
+        return callback;
+    }
+
+    public void setCallback(String callback) {
+        this.callback = callback;
+    }
+
     public static class Builder {
         private String value;
         private boolean checkable;
+        private String callback;
 
         public Builder withValue(String value) {
             this.value = value;
@@ -46,8 +57,13 @@ public class Button {
             return this;
         }
 
+        public Builder withCallBack(String callBack) {
+            this.callback = callBack;
+            return this;
+        }
+
         public Button build() {
-            return new Button(value, checkable);
+            return new Button(value, checkable, callback);
         }
     }
 }

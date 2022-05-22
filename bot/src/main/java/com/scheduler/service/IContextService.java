@@ -2,6 +2,7 @@ package com.scheduler.service;
 
 import com.scheduler.model.CommandType;
 import com.scheduler.model.Context;
+import com.scheduler.model.Language;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
@@ -18,7 +19,10 @@ public interface IContextService {
     void updateContextCommand(long contextId, CommandType commandType, CommandType previousCommandType,
                               Map<String, Object> params);
 
-    void updateContextLocation(Update update, CommandType type);
+    void updateContextCommands(Map<String, String> commands, Update update);
+
+    void updateLocale(long id, Language language);
+
 
     void updateContextParams(Update update, Map<String, Object> params);
 
@@ -26,11 +30,9 @@ public interface IContextService {
 
     String getMessageTextOrDefault(Update update, String paramKey);
 
+    String getMessageText(Update update);
+
     String getStringValueFromParams(Update update, String paramKey);
 
     Object getValueFromParams(Update update, String paramKey);
-
-    CommandType getPreviousCommandTypeAndSaveLocation(Context context);
-
-    void clearContext(Update update);
 }

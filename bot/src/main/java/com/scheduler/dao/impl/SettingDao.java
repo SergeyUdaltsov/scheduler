@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.scheduler.dao.IDynamoDbFactory;
 import com.scheduler.dao.ISettingDao;
-import com.scheduler.model.PaymentType;
 import com.scheduler.model.Role;
 import com.scheduler.utils.CollectionUtils;
 import com.scheduler.utils.JsonUtils;
@@ -30,11 +29,6 @@ public class SettingDao implements ISettingDao {
 
     public SettingDao(IDynamoDbFactory dynamoDbFactory) {
         TABLE = dynamoDbFactory.buildDynamo().getTable(TABLE_NAME);
-    }
-
-    @Override
-    public int getPaymentSum(PaymentType paymentType) {
-        return getOrDefault(paymentType.name(), INTEGER_TYPE, 300);
     }
 
     @Override

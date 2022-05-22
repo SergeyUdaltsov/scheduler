@@ -1,15 +1,15 @@
 package com.scheduler.processor.impl;
 
+import com.scheduler.Constants;
 import com.scheduler.model.CommandType;
 import com.scheduler.model.Context;
 import com.scheduler.processor.IProcessor;
 import com.scheduler.processor.IProcessorFactory;
 import com.scheduler.service.IContextService;
-import com.scheduler.utils.CollectionUtils;
 import com.scheduler.utils.MessageUtils;
+import com.scheduler.utils.StringUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,23 +27,30 @@ public class ProcessorFactory implements IProcessorFactory {
 
     @Override
     public IProcessor getProcessor(Update update, Context context) {
-        if (context == null || "главная".equalsIgnoreCase(MessageUtils.getTextFromUpdate(update))) {
+        if (context == null) {
+            return processorsMap.get(CommandType.REGISTRATION_START);
+        }
+        if ("главная".equalsIgnoreCase(MessageUtils.getTextFromUpdate(update))) {
             return processorsMap.get(CommandType.START);
         }
 
-        List<CommandType> location = context.getLocation();
-        if (CollectionUtils.isEmpty(location)) {
-            return processorsMap.get(CommandType.START);
+        String commandKey = contextService.getMessageText(update);
+        String commandName = defineCommandTypeName(commandKey, context.getCommands());
+        CommandType commandType = CommandType.fromValue(commandName);
+        IProcessor processor = processorsMap.get(commandType);
+        if (processor == null) {
+            throw new IllegalStateException("Processor not found for key " + commandKey);
         }
-        CommandType commandType;
-        if ("назад".equalsIgnoreCase(MessageUtils.getTextFromUpdate(update))) {
-            commandType = location.size() < 3
-                    ? CommandType.START
-                    : contextService.getPreviousCommandTypeAndSaveLocation(context);
+        return processor;
+    }
 
-        } else {
-            commandType = CollectionUtils.getLastElement(location);
+    private String defineCommandTypeName(String commandKey, Map<String, String> commandsMap) {
+        if (Constants.BACK.equals(commandKey)) {
+            return commandsMap.get(commandKey);
         }
-        return processorsMap.get(commandType);
+        String defaultCommandName = commandsMap.get(Constants.ANY);
+        return StringUtils.isBlank(defaultCommandName)
+                ? commandsMap.get(commandKey)
+                : defaultCommandName;
     }
 }

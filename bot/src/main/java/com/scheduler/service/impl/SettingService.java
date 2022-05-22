@@ -1,7 +1,6 @@
 package com.scheduler.service.impl;
 
 import com.scheduler.dao.ISettingDao;
-import com.scheduler.model.PaymentType;
 import com.scheduler.model.Role;
 import com.scheduler.service.ISettingService;
 
@@ -17,11 +16,6 @@ public class SettingService implements ISettingService {
 
     public SettingService(ISettingDao settingDao) {
         this.settingDao = settingDao;
-    }
-
-    @Override
-    public int getPaymentSum(PaymentType paymentType) {
-        return settingDao.getPaymentSum(paymentType);
     }
 
     @Override
