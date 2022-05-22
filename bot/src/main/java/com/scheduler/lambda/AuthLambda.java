@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.scheduler.dagger.DaggerLambdaComponent;
-import com.scheduler.model.BotResponse;
+import com.scheduler.model.request.BotResponse;
 import com.scheduler.service.IAuthService;
 import com.scheduler.service.ISecretService;
 import com.scheduler.utils.JsonUtils;

@@ -1,9 +1,8 @@
 package com.scheduler.dagger;
 
-import com.scheduler.lambda.ArchiveLambda;
 import com.scheduler.lambda.AuthLambda;
 import com.scheduler.lambda.BotLambda;
-import com.scheduler.lambda.UiLambda;
+import com.scheduler.lambda.EventProcessorLambda;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -21,9 +20,9 @@ public interface LambdaComponent {
 
     void inject(BotLambda lambda);
 
-    void inject(ArchiveLambda lambda);
-
     void inject(AuthLambda lambda);
 
-    void inject(UiLambda lambda);
+    void inject(EventProcessorLambda lambda);
+
+//    void inject(UiLambda lambda);
 }

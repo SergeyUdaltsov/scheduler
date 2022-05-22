@@ -8,4 +8,6 @@ import java.io.File;
 public interface IS3Service {
 
     void saveFileToS3(File file, String bucketName, String fileName);
+
+    File getFileFromS3(String bucketName, String fileKey);
 }

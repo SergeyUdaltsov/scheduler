@@ -1,13 +1,8 @@
 package com.scheduler.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +13,6 @@ import java.util.List;
 public class User {
 
     public static String HASH_KEY_NAME = "id";
-    private static final String COLLECT_FIELD_NAME = "coll";
     private static final String NAME_FIELD_NAME = "n";
 
     @DynamoDBHashKey
@@ -32,9 +26,8 @@ public class User {
     @DynamoDBTypeConvertedEnum
     private Role role;
 
-    @DynamoDBAttribute(attributeName = COLLECT_FIELD_NAME)
-    @JsonProperty(COLLECT_FIELD_NAME)
-    private List<Collect> collects = new ArrayList<>();
+    @DynamoDBTypeConvertedEnum
+    private Language language;
 
     public User() {
     }
@@ -77,11 +70,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Collect> getCollects() {
-        return collects;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setCollects(List<Collect> collects) {
-        this.collects = collects;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

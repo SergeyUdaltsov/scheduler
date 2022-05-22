@@ -4,45 +4,44 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.scheduler.dao.IBillDao;
-import com.scheduler.dao.ICollectPaymentDao;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.scheduler.dao.IContextDao;
-import com.scheduler.dao.IPaymentDao;
-import com.scheduler.dao.IPlayerDao;
 import com.scheduler.dao.ISettingDao;
-import com.scheduler.dao.ITransferDao;
 import com.scheduler.dao.IUserDao;
 import com.scheduler.dao.IUserSessionDao;
+import com.scheduler.localization.ILocalizer;
+import com.scheduler.localization.Localizer;
+import com.scheduler.model.EventType;
+import com.scheduler.model.EventTypeKey;
+import com.scheduler.processor.events.IEventProcessor;
+import com.scheduler.processor.events.IEventProcessorFactory;
+import com.scheduler.processor.events.impl.EventProcessorFactory;
+import com.scheduler.processor.events.impl.LocalizationProcessor;
 import com.scheduler.service.IAuthService;
-import com.scheduler.service.IBillService;
-import com.scheduler.service.ICollectService;
 import com.scheduler.service.IContextService;
-import com.scheduler.service.IPaymentService;
-import com.scheduler.service.IPlayerService;
 import com.scheduler.service.IRoleFacade;
 import com.scheduler.service.IS3Service;
 import com.scheduler.service.ISecretService;
 import com.scheduler.service.ISettingService;
-import com.scheduler.service.ITransferService;
+import com.scheduler.service.ISqsService;
 import com.scheduler.service.IUserService;
 import com.scheduler.service.IUserSessionService;
 import com.scheduler.service.impl.AuthService;
-import com.scheduler.service.impl.BillService;
-import com.scheduler.service.impl.CollectService;
 import com.scheduler.service.impl.ContextService;
-import com.scheduler.service.impl.PaymentService;
-import com.scheduler.service.impl.PlayerService;
 import com.scheduler.service.impl.RoleFacade;
 import com.scheduler.service.impl.S3Service;
 import com.scheduler.service.impl.SecretService;
 import com.scheduler.service.impl.SettingService;
-import com.scheduler.service.impl.TransferService;
+import com.scheduler.service.impl.SqsService;
 import com.scheduler.service.impl.UserService;
 import com.scheduler.service.impl.UserSessionService;
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
 import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * @author Serhii_Udaltsov on 4/10/2021
@@ -52,32 +51,14 @@ public class DaggerServiceProvider {
 
     @Provides
     @Singleton
-    public IPlayerService playerService(IPlayerDao playerDao) {
-        return new PlayerService(playerDao);
+    public ILocalizer localizer(IContextService contextService, ISqsService sqsService) {
+        return new Localizer(contextService, sqsService);
     }
 
     @Provides
     @Singleton
     public IContextService contextService(IContextDao contextDao) {
         return new ContextService(contextDao);
-    }
-
-    @Provides
-    @Singleton
-    public IPaymentService paymentService(IPaymentDao paymentDao) {
-        return new PaymentService(paymentDao);
-    }
-
-    @Provides
-    @Singleton
-    public IBillService billService(IBillDao billDao) {
-        return new BillService(billDao);
-    }
-
-    @Provides
-    @Singleton
-    public ITransferService transferService(ITransferDao transferDao, IContextService contextService) {
-        return new TransferService(transferDao, contextService);
     }
 
     @Provides
@@ -96,19 +77,6 @@ public class DaggerServiceProvider {
     @Singleton
     public IS3Service s3Service(AmazonS3 client) {
         return new S3Service(client);
-    }
-
-    @Provides
-    @Singleton
-    public IUserService userService(IUserDao userDao) {
-        return new UserService(userDao);
-    }
-
-    @Provides
-    @Singleton
-    public IUserSessionService sessionService(IUserSessionDao sessionDao, ISettingService settingService,
-                                              IUserService userService) {
-        return new UserSessionService(sessionDao, settingService, userService);
     }
 
     @Provides
@@ -132,7 +100,41 @@ public class DaggerServiceProvider {
 
     @Provides
     @Singleton
-    public ICollectService collectService(ICollectPaymentDao collectPaymentDao) {
-        return new CollectService(collectPaymentDao);
+    public IUserSessionService userSessionService(IUserSessionDao sessionDao, ISettingService settingService,
+                                                  IUserService userService) {
+        return new UserSessionService(sessionDao, settingService, userService);
+    }
+
+    @Provides
+    @Singleton
+    public IUserService userService(IUserDao userDao) {
+        return new UserService(userDao);
+    }
+
+    @Provides
+    @Singleton
+    public AmazonSQS amazonSQSClient() {
+        AmazonSQS amazonSQS = AmazonSQSClientBuilder.defaultClient();
+        return amazonSQS;
+    }
+
+    @Provides
+    @Singleton
+    public ISqsService sqsService(AmazonSQS sqs) {
+        return new SqsService(sqs);
+    }
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @EventTypeKey(EventType.LOCALIZATION)
+    public IEventProcessor localizationProcessor(IS3Service s3Service) {
+        return new LocalizationProcessor(s3Service);
+    }
+
+    @Provides
+    @Singleton
+    public IEventProcessorFactory eventProcessorFactory(Map<EventType, IEventProcessor> processorMap) {
+        return new EventProcessorFactory(processorMap);
     }
 }

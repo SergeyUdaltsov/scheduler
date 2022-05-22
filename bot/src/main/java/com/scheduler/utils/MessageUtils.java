@@ -1,12 +1,14 @@
 package com.scheduler.utils;
 
 import com.scheduler.model.Button;
+import com.scheduler.model.ButtonsType;
 import com.scheduler.model.KeyBoardType;
+import com.scheduler.model.Language;
 import com.scheduler.model.MessageHolder;
-import com.scheduler.model.PaymentType;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,35 +21,27 @@ import java.util.stream.Collectors;
  * @author Serhii_Udaltsov on 4/12/2021
  */
 public class MessageUtils {
-    private static final Map<Integer, String> monthMap = CollectionUtils
-            .<Integer, String>mapBuilder()
-            .withPair(1, "Январь")
-            .withPair(2, "Февраль")
-            .withPair(3, "Март")
-            .withPair(4, "Апрель")
-            .withPair(5, "Май")
-            .withPair(6, "Июнь")
-            .withPair(7, "Июль")
-            .withPair(8, "Август")
-            .withPair(9, "Сентябрь")
-            .withPair(10, "Октябрь")
-            .withPair(11, "Ноябрь")
-            .withPair(12, "Декабрь").build();
+
+    public static List<String> getFlags() {
+        return Arrays.stream(Language.values())
+                .map(Language::getValue)
+                .collect(Collectors.toList());
+    }
 
     public static String getTextFromUpdate(Update update) {
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        if (callbackQuery != null) {
+            return callbackQuery.getData();
+        }
         return update.getMessage().getText();
     }
 
     public static long getUserIdFromUpdate(Update update) {
-        return update.getMessage().getFrom().getId();
-    }
-
-    public static String buildPlayerBalanceMessage(Map<PaymentType, Integer> playerBalance) {
-        StringBuilder message = new StringBuilder();
-        for (Map.Entry<PaymentType, Integer> entry : playerBalance.entrySet()) {
-            message.append(entry.getKey().getValue()).append(": ").append(entry.getValue()).append("\n");
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        if (callbackQuery != null) {
+            return callbackQuery.getFrom().getId();
         }
-        return message.toString();
+        return update.getMessage().getFrom().getId();
     }
 
     public static Map<String, String> commonButtonsMap() {
@@ -61,23 +55,17 @@ public class MessageUtils {
         return Arrays.asList("Платежи", "Начисления", "Баланс", "Игроки", "Переводы", "Сбор");
     }
 
-    public static SendMessage buildDashboardMessage(Update update) {
-        return buildMessage(dashboardButtons(), "Выбери раздел", update, KeyBoardType.TWO_ROW, false);
-    }
-
     public static MessageHolder buildDashboardHolder() {
-        return holder(dashboardButtons(), "Выбери раздел", KeyBoardType.TWO_ROW, true, false);
+        return holder(dashboardButtons(), "Выбери раздел", KeyBoardType.TWO_ROW, true,
+                false, ButtonsType.KEYBOARD);
     }
 
-    public static MessageHolder buildDashboardHolder(String message) {
-        return holder(dashboardButtons(), String.format("%s%nВыбери раздел", message),
-                KeyBoardType.TWO_ROW, true, false);
-    }
-
-    public static Map<String, String> buildButtons(List<String> buttons, boolean withCommon) {
+    public static Map<String, String> buildButtons(List<Button> buttons, boolean withCommon) {
         Map<String, String> resultMap = new LinkedHashMap<>();
-        for (String button : buttons) {
-            resultMap.put(button, button);
+        for (Button button : buttons) {
+            resultMap.put(button.getValue(), StringUtils.isBlank(button.getCallback())
+                    ? button.getValue()
+                    : button.getCallback());
         }
         if (withCommon) {
             resultMap.putAll(commonButtonsMap());
@@ -85,31 +73,14 @@ public class MessageUtils {
         return resultMap;
     }
 
-    public static SendMessage buildMessage(List<String> buttons, String message, Update update, KeyBoardType type,
-                                           boolean withCommonButtons) {
-        long chatId = MessageUtils.getUserIdFromUpdate(update);
-        return buildMessage(buttons, message, chatId, type, withCommonButtons);
-    }
-
-    public static SendMessage buildMessage(List<String> buttons, String message, long operatorId, KeyBoardType type,
-                                           boolean withCommonButtons) {
-        SendMessage sendMessage = new SendMessage(String.valueOf(operatorId), message);
-        Map<String, String> buttonsMap = buildButtons(buttons, withCommonButtons);
-        ReplyKeyboardMarkup keyboard = KeyBoardUtils.buildReplyKeyboard(buttonsMap, type);
+    public static SendMessage buildMessage(MessageHolder holder, long operatorId) {
+        SendMessage sendMessage = new SendMessage(String.valueOf(operatorId), holder.getMessage());
+        Map<String, String> buttonsMap = buildButtons(holder.getButtons(), holder.isWithCommonButtons());
+        ReplyKeyboard keyboard = holder.getButtonsType()
+                .getButtonsFunction()
+                .apply(buttonsMap, holder.getKeyBoardType());
         sendMessage.setReplyMarkup(keyboard);
         return sendMessage;
-    }
-
-    public static List<String> paymentsList() {
-        return CollectionUtils.listWithElements("Тренерские", "Лед", "Воскресный лед");
-    }
-
-    public static List<String> balanceTitlesList() {
-        return CollectionUtils.listWithElements("Должники", "По игроку", "На карте", "Переплаты");
-    }
-
-    public static MessageHolder commonCheckableVerticalHolder(List<String> titles, String message) {
-        return commonCheckableHolder(titles, message, KeyBoardType.VERTICAL);
     }
 
     public static MessageHolder commonUnCheckableVerticalHolder(List<String> titles, String message) {
@@ -122,15 +93,21 @@ public class MessageUtils {
 
     public static MessageHolder commonHolder(List<String> titles, String message, KeyBoardType type,
                                              boolean isCheckable) {
-        return holder(titles, message, type, isCheckable, true);
+        return holder(titles, message, type, isCheckable, true, ButtonsType.KEYBOARD);
+    }
+
+    public static MessageHolder getLanguageMessageHolder() {
+        return holder(MessageUtils.getFlags(), "Select language",
+                KeyBoardType.VERTICAL, false, false, ButtonsType.INLINE);
     }
 
     public static MessageHolder holder(List<String> titles, String message, KeyBoardType type,
-                                       boolean isCheckable, boolean withCommonButtons) {
+                                       boolean isCheckable, boolean withCommonButtons, ButtonsType buttonsType) {
         return MessageHolder.builder()
                 .withCommonButtons(withCommonButtons)
                 .withMessage(message)
                 .withButtons(commonButtons(titles, isCheckable))
+                .withButtonsType(buttonsType)
                 .withKeyboardType(type)
                 .build();
     }
@@ -144,23 +121,4 @@ public class MessageUtils {
                 .collect(Collectors.toList());
     }
 
-    public static String getMonthName(int number) {
-        return monthMap.get(number);
-    }
-
-    public static List<String> paymentsButtons() {
-        List<String> buttons = paymentBillsButtons();
-        buttons.add("Провести Льготный");
-        buttons.add("Показать Последние");
-        buttons.add("Файл с платежами");
-        return buttons;
-    }
-
-    public static List<String> billsButtons() {
-        return paymentBillsButtons();
-    }
-
-    public static List<String> paymentBillsButtons() {
-        return CollectionUtils.listWithElements("Провести", "Редактировать");
-    }
 }

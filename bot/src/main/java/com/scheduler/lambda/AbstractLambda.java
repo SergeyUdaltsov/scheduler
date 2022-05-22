@@ -3,7 +3,7 @@ package com.scheduler.lambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.scheduler.model.BotResponse;
+import com.scheduler.model.request.BotResponse;
 import com.scheduler.model.User;
 import com.scheduler.service.IAuthService;
 import com.scheduler.service.IUserService;
