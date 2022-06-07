@@ -9,30 +9,31 @@ import com.scheduler.model.MessageHolder;
 import com.scheduler.model.events.EventHolder;
 import com.scheduler.model.events.LocalizationEvent;
 import com.scheduler.service.IContextService;
+import com.scheduler.service.ISettingService;
 import com.scheduler.service.ISqsService;
 import com.scheduler.utils.JsonUtils;
 import com.scheduler.utils.StringUtils;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@RequiredArgsConstructor
 public class Localizer implements ILocalizer {
 
     private final IContextService contextService;
     private final ISqsService sqsService;
+    private final ISettingService settingService;
     private final Map<Language, Map<String, String>> dictionaries = new HashMap<>();
     private final Set<String> unlocalizedKeys = new HashSet<>();
-
-    public Localizer(IContextService contextService, ISqsService sqsService) {
-        this.contextService = contextService;
-        this.sqsService = sqsService;
-    }
 
     @Override
     public void localize(List<MessageHolder> holders, Update update) {
@@ -49,13 +50,22 @@ public class Localizer implements ILocalizer {
             dictionary = getDictionary(language);
             dictionaries.put(language, dictionary);
         }
-
+        Set<String> keysToLog = new HashSet<>();
         for (MessageHolder holder : holders) {
-            holder.setMessage(localize(holder.getMessage(), dictionary, holder.getPlaceholders()));
+            holder.setMessage(localizeAndFillKeysToLog(holder.getMessage(), dictionary, holder.getPlaceholders(), keysToLog));
             List<Button> buttons = holder.getButtons();
             for (Button button : buttons) {
-                button.setValue(localize(button.getValue(), dictionary, holder.getPlaceholders()));
+                button.setValue(localizeAndFillKeysToLog(button.getValue(), dictionary, holder.getPlaceholders(), keysToLog));
             }
+        }
+        if (!CollectionUtils.isEmpty(keysToLog) && settingService.isLocalizationLoggingEnabled()) {
+            EventHolder eventHolder = EventHolder.builder()
+                    .eventType(EventType.LOCALIZATION)
+                    .content(JsonUtils.convertObjectToString(
+                            LocalizationEvent.builder()
+                                    .keys(keysToLog).build()
+                    )).build();
+            sqsService.sendEvent(eventHolder);
         }
     }
 
@@ -65,14 +75,15 @@ public class Localizer implements ILocalizer {
             return fromCache;
         }
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(language.getLocalizationFilePath());
-        return JsonUtils.getObjectFromInputStream(new TypeReference<Map<String, String>>() {
+        return JsonUtils.getObjectFromInputStream(new TypeReference<>() {
         }, resourceAsStream);
 
     }
 
-    private String localize(String text, Map<String, String> dictionary, Map<String, String> placeholders) {
-        localizePlaceholders(dictionary, placeholders);
-        String localizedText = localizeString(text, dictionary);
+    private String localizeAndFillKeysToLog(String text, Map<String, String> dictionary, Map<String, String> placeholders,
+                                            Set<String> keysToLog) {
+        localizePlaceholdersAndFillKeysToLog(dictionary, placeholders, keysToLog);
+        String localizedText = localizeStringAndFillKeysToLog(text, dictionary, keysToLog);
         return substitutePlaceholders(localizedText, placeholders);
     }
 
@@ -84,27 +95,23 @@ public class Localizer implements ILocalizer {
         return sub.replace(text);
     }
 
-    private void localizePlaceholders(Map<String, String> dictionary, Map<String, String> placeholders) {
+    private void localizePlaceholdersAndFillKeysToLog(Map<String, String> dictionary, Map<String, String> placeholders,
+                                                      Set<String> keysToLog) {
         if (placeholders == null) {
             return;
         }
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            entry.setValue(localizeString(entry.getValue(), dictionary));
+            entry.setValue(localizeStringAndFillKeysToLog(entry.getValue(), dictionary, keysToLog));
         }
     }
 
-    private String localizeString(String key, Map<String, String> dictionary) {
+    private String localizeStringAndFillKeysToLog(String key, Map<String, String> dictionary, Set<String> keysToLog) {
         String localizedText = dictionary.get(key);
         System.out.println("Key to localize ---------- " + key);
         if (StringUtils.isBlank(localizedText) && !unlocalizedKeys.contains(key)) {
             System.out.println("key was not localized and is not in set of unlocalized keys --------- " + key);
-            EventHolder eventHolder = new EventHolder();
-            eventHolder.setEventType(EventType.LOCALIZATION);
-            LocalizationEvent localizationEvent = new LocalizationEvent();
-            localizationEvent.setText(key);
-            eventHolder.setContent(JsonUtils.convertObjectToString(localizationEvent));
-            sqsService.sendEvent(eventHolder);
             unlocalizedKeys.add(key);
+            keysToLog.add(key);
         }
         return StringUtils.isBlank(localizedText) ? key : localizedText;
     }

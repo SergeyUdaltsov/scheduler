@@ -56,4 +56,23 @@ public class KeyBoardUtils {
         return keyboard;
     }
 
+    public static ReplyKeyboardMarkup buildContactsKeyboard(Map<String, String> buttonsMap, KeyBoardType type) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardButton keyboardButton = new KeyboardButton();
+        keyboardButton.setText("Share your number");
+        keyboardButton.setRequestContact(true);
+        keyboardFirstRow.add(keyboardButton);
+
+        keyboard.add(keyboardFirstRow);
+        replyKeyboardMarkup.setKeyboard(keyboard);
+        return replyKeyboardMarkup;
+    }
+
 }

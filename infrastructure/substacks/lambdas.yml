@@ -1,0 +1,95 @@
+#lambdas subStack
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is a lambdas template."
+Resources:
+  BotLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Ref: BotLambdaName
+      Handler: com.teleBot.lambda.BotLambda
+      MemorySize: 512
+      Role:
+        Ref: BotRoleArn
+      Runtime: java11
+      Timeout: 60
+  EventProcessorLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Ref: EventLambdaName
+      Handler: com.scheduler.lambda.EventProcessorLambda
+      MemorySize: 512
+      Role:
+        Ref: BotRoleArn
+      Runtime: java11
+      Timeout: 60
+  AuthLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Ref: AuthLambdaName
+      Handler: com.teleBot.lambda.AuthLambda
+      MemorySize: 512
+      Role:
+        Ref: BotRoleArn
+      Runtime: java8
+      Timeout: 60
+  UiLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Ref: UiLambdaName
+      Handler: com.teleBot.lambda.UiLambda
+      MemorySize: 512
+      Role:
+        Ref: BotRoleArn
+      Runtime: java11
+      Timeout: 60
+Outputs:
+  EventProcessorArn:
+    Description: "Arn of event processor lambda"
+    Value:
+      Fn::GetAtt:
+        - EventProcessorLambda
+        - Arn
+  BotLambdaName:
+    Value:
+      Ref: BotLambdaName
+  AuthLambdaName:
+    Value:
+      Ref: AuthLambdaName
+  UiLambdaName:
+    Value:
+      Ref: UiLambdaName
+  AuthLambdaArn:
+    Value:
+      Fn::GetAtt:
+        - AuthLambda
+        - Arn
+  UiLambdaArn:
+    Value:
+      Fn::GetAtt:
+        - UiLambda
+        - Arn
+  BotLambdaArn:
+    Value:
+      Fn::GetAtt:
+        - BotLambda
+        - Arn
+Parameters:
+  BotRoleArn:
+    Description: Lambda role arn
+    Type: String
+  BotLambdaName:
+    Type: String
+    Default: bot_lambda1
+  EventLambdaName:
+    Type: String
+    Default: test_event_lambda1
+  AuthLambdaName:
+    Type: String
+    Default: auth_lambda1
+  UiLambdaName:
+    Type: String
+    Default: ui_lambda1

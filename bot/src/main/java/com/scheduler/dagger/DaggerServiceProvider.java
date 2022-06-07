@@ -51,8 +51,8 @@ public class DaggerServiceProvider {
 
     @Provides
     @Singleton
-    public ILocalizer localizer(IContextService contextService, ISqsService sqsService) {
-        return new Localizer(contextService, sqsService);
+    public ILocalizer localizer(IContextService contextService, ISqsService sqsService, ISettingService settingService) {
+        return new Localizer(contextService, sqsService, settingService);
     }
 
     @Provides

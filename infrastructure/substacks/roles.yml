@@ -1,0 +1,40 @@
+#roles substack
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is a roles template."
+Resources:
+  BotLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: lambda_policy_test_api_test3
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'sqs:*'
+                  - 'ssm:*'
+                  - 's3:*'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogStream'
+                  - 'logs:CreateLogGroup'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+Outputs:
+  BotRoleArn:
+    Value:
+      Fn::GetAtt:
+        - BotLambdaRole
+        - Arn

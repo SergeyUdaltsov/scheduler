@@ -1,11 +1,14 @@
 package com.scheduler.utils;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Set;
 
 public class FileUtils {
     public static final String BASE_FILE_DIRECTORY = "/tmp/";
@@ -20,9 +23,19 @@ public class FileUtils {
         }
     }
 
-    public static void appendTextToFile(File file, String text) {
+    public static boolean appendTextToFile(File file, Set<String> keys) {
         try {
-            Files.write(file.toPath(), (text + "\n").getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+            List<String> existingKeys = Files.readAllLines(file.toPath());
+            if (existingKeys.containsAll(keys)) {
+                return false;
+            }
+            existingKeys.forEach(keys::remove);
+            if (CollectionUtils.isNotEmpty(keys)) {
+                String keysStr = String.join("\n", keys) + "\n";
+                Files.write(file.toPath(), keysStr.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+                return true;
+            }
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not write text to file " + file.getName());

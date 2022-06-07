@@ -26,19 +26,18 @@ public class FirstNameProcessor implements IProcessor {
         this.userService = userService;
     }
 
-    public List<MessageHolder> processRequest(Update update) throws TelegramApiException {
+    public List<MessageHolder> processRequest(Update update) {
         long id = MessageUtils.getUserIdFromUpdate(update);
         String name = MessageUtils.getTextFromUpdate(update);
         if (StringUtils.isBlank(name)) {
             commandsMap.put(Constants.ANY, CommandType.REGISTER_FIRST_NAME.name());
-            return Collections.singletonList(MessageUtils.commonCheckableHolder(Collections.emptyList(), "Введи имя",
-                    KeyBoardType.VERTICAL));
+            return Collections.singletonList(MessageUtils.commonCheckableHolder(Collections.emptyList(),
+                    Constants.Messages.ENTER_YOUR_NAME, KeyBoardType.VERTICAL));
         }
         User user = new User(id, name, null);
         userService.saveUser(user);
         commandsMap.put(Constants.ANY, CommandType.REGISTER_SECOND_NAME.name());
-        return Collections.singletonList(MessageUtils.commonCheckableHolder(Collections.emptyList(), "Введи фамилию",
-                KeyBoardType.VERTICAL));
+        return Collections.singletonList(MessageUtils.getContactsMessageHolder());
     }
 
     @Override

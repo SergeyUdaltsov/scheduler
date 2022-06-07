@@ -31,12 +31,12 @@ public abstract class AbstractLambda implements RequestStreamHandler {
 
         String userNameFromToken = authService.validateUser(params);
         if (StringUtils.isBlank(userNameFromToken)) {
-            JsonUtils.writeObjectToOutput(outputStream, new BotResponse().setStatusCode(401));
+            JsonUtils.writeObjectToOutput(outputStream, BotResponse.builder().statusCode(401));
             return;
         }
         User userFromDb = userService.getUserByName(userNameFromToken);
         if (userFromDb == null) {
-            JsonUtils.writeObjectToOutput(outputStream, new BotResponse().setStatusCode(401));
+            JsonUtils.writeObjectToOutput(outputStream, BotResponse.builder().statusCode(401));
             return;
         }
         Map<String, Object> body = (Map) params.get("body");
