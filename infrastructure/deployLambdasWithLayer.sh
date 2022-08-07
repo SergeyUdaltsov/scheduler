@@ -15,7 +15,7 @@ for lambda_name in $lambdas
 do
   :
   echo "Attaching new version of layer to $lambda_name function..."
-  aws lambda update-function-configuration --function-name $lambda_name --layers $lambda_layer_name
+  aws lambda update-function-configuration --function-name $lambda_name --layers $lambda_layer_name --region $home_region
 done
 $SHELL
 

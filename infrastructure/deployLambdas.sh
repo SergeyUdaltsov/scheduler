@@ -18,7 +18,7 @@ for lambda_name in $lambdas
 do
   :
   echo "Updating $lambda_name function code..."
-  aws lambda update-function-code --function-name $lambda_name --zip-file fileb://./bot/target/"$bot_jar"
+  aws lambda update-function-code --function-name $lambda_name --zip-file fileb://./bot/target/"$bot_jar" --region $home_region
 done
 
 #$SHELL
