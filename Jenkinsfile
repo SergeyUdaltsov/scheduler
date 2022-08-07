@@ -19,7 +19,7 @@ pipeline {
         stage("Deploy") {
             steps {
                 echo "Updating lambdas code..."
-                sh '/bin/bash ${WORKSPACE}/deployLambdasWithLayer.sh'
+                sh '/bin/bash ${WORKSPACE}/infrastructure/deployLambdasWithLayer.sh'
             }
         }
     }
