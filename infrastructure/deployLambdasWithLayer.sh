@@ -1,6 +1,6 @@
 #!/bin/bash
-source deployment.config
-source deployLambdas.sh
+source ${WORKSPACE}/deployment.config
+source ${WORKSPACE}/deployLambdas.sh
 
 echo "Copying 3rd party dependency layer jar to s3..."
 aws s3 cp ./bot/target/bot-layer-dependencies.jar s3://"$deploymentBucket"/bot-layer-dependencies.jar
