@@ -16,5 +16,11 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
+        stage("Deploy") {
+            steps {
+                echo "Updating lambdas code..."
+                sh '/bin/bash ${WORKSPACE}/deployLambdasWithLayer.sh'
+            }
+        }
     }
 }
