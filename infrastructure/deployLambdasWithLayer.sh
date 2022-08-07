@@ -9,7 +9,7 @@ echo "Publishing new version of layer..."
 layer_name=$(aws lambda publish-layer-version \
     --layer-name "$lambda_layer_name" \
     --content S3Bucket="$deploymentBucket",S3Key=bot-layer-dependencies.jar \
-    --compatible-runtimes "$runtime" --query LayerVersionArn --output text)
+    --compatible-runtimes "$runtime" --query LayerVersionArn --output text --region $home_region)
 
 for lambda_name in $lambdas
 do
