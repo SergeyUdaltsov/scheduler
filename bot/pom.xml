@@ -21,28 +21,28 @@
                     <target>11</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
-                <executions>
-                    <execution>
-                        <id>native2ascii-utf8-resources</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                            <workDir>src/main/resources</workDir>
-                            <encoding>UTF8</encoding>
-                            <tempDir>C:/work/temp</tempDir>
-                            <includes>
-                                <include>localization*.properties</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>native2ascii-maven-plugin</artifactId>-->
+<!--                <version>1.0-beta-1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>native2ascii-utf8-resources</id>-->
+<!--                        <phase>process-classes</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>native2ascii</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <workDir>src/main/resources</workDir>-->
+<!--                            <encoding>UTF8</encoding>-->
+<!--                            <tempDir>C:/work/temp</tempDir>-->
+<!--                            <includes>-->
+<!--                                <include>localization*.properties</include>-->
+<!--                            </includes>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
