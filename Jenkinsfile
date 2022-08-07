@@ -3,11 +3,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.3.9'
-    }
-
-
     parameters {
         choice(name: 'stack', choices: 'dev\ntest\nprod', description: 'Stack to deploy')
         choice(name: 'action', choices: 'deploy\ndestroy', description: 'Deployment action')
