@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source deployment.config
+source ${WORKSPACE}/infrastructure/deployment.config
 
 # shellcheck disable=SC2154
 stackStatus=$(aws cloudformation describe-stacks --stack-name "$stack_name" --query Stacks[0].StackStatus --output text)
