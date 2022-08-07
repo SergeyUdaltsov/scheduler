@@ -19,13 +19,9 @@ pipeline {
             steps {
                 script {
                     echo "Action: ${params.action}, stack: ${params.stack}"
-
                     sh 'mvn clean install'
-
                 }
-
             }
-
     }
 
 }
