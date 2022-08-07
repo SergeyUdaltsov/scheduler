@@ -11,11 +11,9 @@ pipeline {
 
     stages {
         stage('Build') {
-            steps {
-                echo "Action: ${params.action}, stack: ${params.stack}"
-                withMaven {
-                    sh 'mvn clean install'
-                }
+            echo "Action: ${params.action}, stack: ${params.stack}"
+            withMaven(maven: 'maven-3') {
+                sh 'mvn clean install'
             }
         }
     }
