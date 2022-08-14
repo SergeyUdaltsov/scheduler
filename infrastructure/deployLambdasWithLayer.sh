@@ -11,6 +11,10 @@ layer_name=$(aws lambda publish-layer-version \
     --content S3Bucket="$deploymentBucket",S3Key=bot-layer-dependencies.jar \
     --compatible-runtimes "$runtime" --query LayerVersionArn --output text --region $home_region)
 
+echo "layer name -------------------- "
+echo $lambda_layer_name
+echo $layer_name
+
 for lambda_name in $lambdas
 do
   :

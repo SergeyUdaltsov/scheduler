@@ -2,15 +2,6 @@
 
 source ${WORKSPACE}/infrastructure/deployment.config
 
-# shellcheck disable=SC2154
-#stackStatus=$(aws cloudformation describe-stacks --stack-name "$stack_name" --query Stacks[0].StackStatus --output text --region $home_region)
-#
-#if [ "$stackStatus" != "CREATE_COMPLETE" ]; then
-#  echo "Infrastructure is deployed correctly. Updating resources is in progress..."
-#  [ -e "$deploymentStatusFile" ] && rm "$deploymentStatusFile"
-#  printf "Infrastructure was not deployed correctly. Updating resources is unavailable.\nCheck the result of $deploymentScriptFile file execution" >> "$deploymentStatusFile"
-#    exit 1
-#fi
 mvn clean install -e
 
   # shellcheck disable=SC2154
