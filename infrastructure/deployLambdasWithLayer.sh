@@ -15,7 +15,6 @@ echo "layer name -------------------- "
 echo $lambda_layer_name
 echo $layer_name
 
-
 for lambda_name in $lambdas
 do
   :
