@@ -11,15 +11,11 @@ layer_name=$(aws lambda publish-layer-version \
     --content S3Bucket="$deploymentBucket",S3Key=bot-layer-dependencies.jar \
     --compatible-runtimes "$runtime" --query LayerVersionArn --output text --region $home_region)
 
-echo "layer name -------------------- "
-echo $lambda_layer_name
-echo $layer_name
-
 for lambda_name in $lambdas
 do
   :
   echo "Attaching new version of layer to $lambda_name function..."
-  aws lambda update-function-configuration --function-name $lambda_name --layers $lambda_layer_name --region $home_region
+  aws lambda update-function-configuration --function-name $lambda_name --layers $layer_name --region $home_region
 done
 $SHELL
 
