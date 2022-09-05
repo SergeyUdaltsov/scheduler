@@ -1,0 +1,9 @@
+dev:
+  awsAccount: 773974733061
+  jenkinsRole: ec2trusted
+  deploymentBucket: scheduler-deployment-resources-bucket
+
+prod:
+  awsAccount: 773974733061
+  jenkinsRole: ec2trusted
+  deploymentBucket: scheduler-deployment-resources-bucket
