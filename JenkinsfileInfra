@@ -9,7 +9,7 @@ pipeline {
         stage('Infrastructure deployment') {
             steps {
                 script {
-                    CONFIG = readYaml file: config.yml'
+                    CONFIG = readYaml file: 'config.yml'
                     withAWS(roleAccount:'${CONFIG[params.ENV].awsAccount}', region:'${params.REGION}', role:'${CONFIG[params.ENV].jenkinsRole}') {
                         s3Upload(file:'substacks', bucket:'${CONFIG[params.ENV].deploymentBucket}', path:'infrastructure/')
                         cfnUpdate(stack:'my-stack', params:['DeploymentBucketUrl': '${CONFIG[params.ENV].deploymentBucket}'], file:'parentStack.yml')
