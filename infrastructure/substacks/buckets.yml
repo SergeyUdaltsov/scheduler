@@ -1,0 +1,23 @@
+#s3 buckets subStack
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is an s3 buckets template."
+Resources:
+  LocalizeBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        Ref: LocalizedBucketName
+  UiBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        Ref: UiBucketName
+Parameters:
+  LocalizedBucketName:
+    Type: String
+    Default: scheduler-unlocalized-messages
+  UiBucketName:
+    Type: String
+    Default: scheduler-ui-bucket

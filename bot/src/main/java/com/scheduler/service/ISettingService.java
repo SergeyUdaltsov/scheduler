@@ -13,4 +13,6 @@ public interface ISettingService {
     Map<Role, List<String>> getRoleMapping();
 
     int getSessionDuration();
+
+    boolean isLocalizationLoggingEnabled();
 }

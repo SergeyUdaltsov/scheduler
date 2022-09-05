@@ -22,8 +22,9 @@ public class SettingDao implements ISettingDao {
     private static final String TABLE_NAME = "Settings";
     private static final String ROLES = "ROLES";
     private static final String SESSION_DURATION = "SESSION_DURATION";
-    private static final TypeReference INTEGER_TYPE = new TypeReference<Integer>() {};
-    private static final TypeReference ROLES_MAP_TYPE = new TypeReference<Map<Role, List<String>>>() {};
+    private static final TypeReference<Integer> INTEGER_TYPE = new TypeReference<>() {};
+    private static final TypeReference<Boolean> BOOLEAN_TYPE = new TypeReference<>() {};
+    private static final TypeReference<Map<Role, List<String>>> ROLES_MAP_TYPE = new TypeReference<>() {};
 
     private Table TABLE;
 
@@ -43,6 +44,12 @@ public class SettingDao implements ISettingDao {
     @Override
     public int getSessionDuration() {
         return getOrDefault(SESSION_DURATION, INTEGER_TYPE, 15);
+    }
+
+    @Override
+    public boolean getBooleanSettingValue(String settingName, boolean defaultValue) {
+        return getOrDefault(settingName, BOOLEAN_TYPE, defaultValue);
+
     }
 
     private <T> T getOrDefault(String keyName, TypeReference<T> typeReference, T defaultValue) {

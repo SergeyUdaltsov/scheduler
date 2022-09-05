@@ -4,6 +4,8 @@ import com.scheduler.dao.IUserDao;
 import com.scheduler.model.User;
 import com.scheduler.service.IUserService;
 
+import java.util.Hashtable;
+
 /**
  * @author Serhii_Udaltsov on 6/6/2021
  */

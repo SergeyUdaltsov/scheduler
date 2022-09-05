@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.scheduler.utils.CommandTypeConverter;
 import com.scheduler.utils.MapObjectConverter;
 import com.scheduler.utils.MapStringConverter;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 /**
  * @author Serhii_Udaltsov on 4/10/2021
  */
+@Data
 @DynamoDBTable(tableName = "Context")
 public class Context {
     public static final String HASH_KEY = "id";
@@ -42,37 +44,5 @@ public class Context {
         this.userId = userId;
         this.params = params;
         this.language = language;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public Map<String, Object> getParams() {
-        return params;
-    }
-
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public Map<String, String> getCommands() {
-        return commands;
-    }
-
-    public void setCommands(Map<String, String> commands) {
-        this.commands = commands;
     }
 }

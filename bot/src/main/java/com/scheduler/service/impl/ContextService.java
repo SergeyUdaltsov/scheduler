@@ -5,6 +5,7 @@ import com.scheduler.model.CommandType;
 import com.scheduler.model.Context;
 import com.scheduler.model.Language;
 import com.scheduler.service.IContextService;
+import com.scheduler.service.IRoleFacade;
 import com.scheduler.utils.MessageUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class ContextService implements IContextService {
 
-    IContextDao contextDao;
+    private final IContextDao contextDao;
 
     public ContextService(IContextDao contextDao) {
         this.contextDao = contextDao;

@@ -1,0 +1,56 @@
+#DynamoDb tables subStack
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is a DynamoDb tables template."
+Resources:
+  CustomersTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '1'
+        WriteCapacityUnits: '1'
+      TableName:
+        Ref: CustomersTableName
+  SettingsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '1'
+        WriteCapacityUnits: '1'
+      TableName:
+        Ref: SettingsTableName
+  UserContextTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '1'
+        WriteCapacityUnits: '1'
+      TableName:
+        Ref: ContextTableName
+Parameters:
+  CustomersTableName:
+    Type: String
+    Default: Customer1
+  SettingsTableName:
+    Type: String
+    Default: Settings1
+  ContextTableName:
+    Type: String
+    Default: UserContext1
