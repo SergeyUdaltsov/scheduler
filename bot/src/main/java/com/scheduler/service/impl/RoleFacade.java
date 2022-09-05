@@ -30,7 +30,6 @@ public class RoleFacade implements IRoleFacade {
     public List<BotApiMethod> filterByNotAllowed(List<MessageHolder> holders, long operatorId) {
         List<BotApiMethod> messages = new ArrayList<>();
         for (MessageHolder holder : holders) {
-//            buttons.removeIf(b -> b.isCheckable() && !isActionAllowed(b.getValue(), operatorId));
             messages.add(MessageUtils.buildMessage(holder, operatorId));
         }
         return messages;

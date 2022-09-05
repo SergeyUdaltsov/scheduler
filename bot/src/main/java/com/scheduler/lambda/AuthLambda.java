@@ -41,7 +41,7 @@ public class AuthLambda implements RequestStreamHandler {
             response.put("token", token);
             JsonUtils.writeObjectToOutput(outputStream, response);
         } else {
-            JsonUtils.writeObjectToOutput(outputStream, new BotResponse().setStatusCode(401));
+            JsonUtils.writeObjectToOutput(outputStream, BotResponse.builder().statusCode(401).build());
         }
     }
 

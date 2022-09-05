@@ -27,9 +27,11 @@ public class SecretService implements ISecretService {
     public String getBotToken() {
         String tokenFromCache = paramsCache.get(BOT_PARAMETER_NAME);
         if (!StringUtils.isBlank(tokenFromCache)) {
+            System.out.println("Bot token from cache ------------ " + tokenFromCache);
             return tokenFromCache;
         }
         String tokenFromDb = getParameterValue(BOT_PARAMETER_NAME);
+        System.out.println("Bot token from db ------------ " + tokenFromCache);
         paramsCache.put(BOT_PARAMETER_NAME, tokenFromDb);
         return tokenFromDb;
     }

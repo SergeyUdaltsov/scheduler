@@ -21,6 +21,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 import javax.inject.Singleton;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**

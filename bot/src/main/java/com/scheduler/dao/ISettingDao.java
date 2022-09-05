@@ -13,4 +13,6 @@ public interface ISettingDao {
     Map<Role, List<String>> getRoleMapping();
 
     int getSessionDuration();
+
+    boolean getBooleanSettingValue(String settingName, boolean defaultValue);
 }

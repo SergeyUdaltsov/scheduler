@@ -1,0 +1,60 @@
+#queues subStack
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is queues template."
+Resources:
+  MyQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName:
+        Ref: MyQueueName
+      DelaySeconds: 0
+      VisibilityTimeout: 60
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - DeadLetterQueue
+            - Arn
+        maxReceiveCount: 5
+    DependsOn:
+      - DeadLetterQueue
+  DeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName:
+        Ref: DeadLetterQueueName
+      DelaySeconds: 0
+      VisibilityTimeout: 60
+  LambdaFunctionEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      Enabled: true
+      EventSourceArn: !GetAtt MyQueue.Arn
+      FunctionName:
+        Ref: EventLambdaArn
+Outputs:
+  QueueURL:
+    Description: "URL of new Amazon SQS Queue"
+    Value:
+      Ref: MyQueue
+  QueueARN:
+    Description: "ARN of new AmazonSQS Queue"
+    Value:
+      Fn::GetAtt:
+        - MyQueue
+        - Arn
+  QueueName:
+    Description: "Name of new Amazon SQS Queue"
+    Value:
+      Fn::GetAtt:
+        - MyQueue
+        - QueueName
+Parameters:
+  MyQueueName:
+    Type: String
+    Default: scheduler_event_queue1
+  DeadLetterQueueName:
+    Type: String
+    Default: dead_events_queue1
+  EventLambdaArn:
+    Type: String

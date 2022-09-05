@@ -1,5 +1,6 @@
 package com.scheduler.utils;
 
+import com.scheduler.Constants;
 import com.scheduler.model.Button;
 import com.scheduler.model.ButtonsType;
 import com.scheduler.model.KeyBoardType;
@@ -11,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,10 +85,6 @@ public class MessageUtils {
         return sendMessage;
     }
 
-    public static MessageHolder commonUnCheckableVerticalHolder(List<String> titles, String message) {
-        return commonHolder(titles, message, KeyBoardType.VERTICAL, false);
-    }
-
     public static MessageHolder commonCheckableHolder(List<String> titles, String message, KeyBoardType type) {
         return commonHolder(titles, message, type, true);
     }
@@ -101,14 +99,19 @@ public class MessageUtils {
                 KeyBoardType.VERTICAL, false, false, ButtonsType.INLINE);
     }
 
+    public static MessageHolder getContactsMessageHolder() {
+        return holder(Collections.singletonList(Constants.Messages.SHARE_CONTACTS), Constants.Messages.SHARE_CONTACTS,
+                KeyBoardType.VERTICAL, false, false, ButtonsType.CONTACTS);
+    }
+
     public static MessageHolder holder(List<String> titles, String message, KeyBoardType type,
                                        boolean isCheckable, boolean withCommonButtons, ButtonsType buttonsType) {
         return MessageHolder.builder()
                 .withCommonButtons(withCommonButtons)
-                .withMessage(message)
-                .withButtons(commonButtons(titles, isCheckable))
-                .withButtonsType(buttonsType)
-                .withKeyboardType(type)
+                .message(message)
+                .buttons(commonButtons(titles, isCheckable))
+                .buttonsType(buttonsType)
+                .keyBoardType(type)
                 .build();
     }
 
