@@ -15,7 +15,6 @@ pipeline {
                         cfnUpdate(stack:'my-stack', params:['DeploymentBucketUrl': '${CONFIG[params.ENV].deploymentBucket}'], file:'parentStack.yml')
                     }
                 }
-
             }
         }
     }
