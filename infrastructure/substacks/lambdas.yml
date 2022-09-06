@@ -5,6 +5,11 @@ Resources:
   BotLambda:
     Type: AWS::Lambda::Function
     Properties:
+      Code:
+        S3Bucket:
+          Ref: LambdaBucket
+        S3Key:
+          Ref: LambdaArtifact
       FunctionName:
         Ref: BotLambdaName
       Handler: com.teleBot.lambda.BotLambda
@@ -16,6 +21,11 @@ Resources:
   EventProcessorLambda:
     Type: AWS::Lambda::Function
     Properties:
+      Code:
+        S3Bucket:
+          Ref: LambdaBucket
+        S3Key:
+          Ref: LambdaArtifact
       FunctionName:
         Ref: EventLambdaName
       Handler: com.scheduler.lambda.EventProcessorLambda
@@ -27,6 +37,11 @@ Resources:
   AuthLambda:
     Type: AWS::Lambda::Function
     Properties:
+      Code:
+        S3Bucket:
+          Ref: LambdaBucket
+        S3Key:
+          Ref: LambdaArtifact
       FunctionName:
         Ref: AuthLambdaName
       Handler: com.teleBot.lambda.AuthLambda
@@ -38,6 +53,11 @@ Resources:
   UiLambda:
     Type: AWS::Lambda::Function
     Properties:
+      Code:
+        S3Bucket:
+          Ref: LambdaBucket
+        S3Key:
+          Ref: LambdaArtifact
       FunctionName:
         Ref: UiLambdaName
       Handler: com.teleBot.lambda.UiLambda
@@ -81,6 +101,12 @@ Parameters:
   BotRoleArn:
     Description: Lambda role arn
     Type: String
+  LambdaBucket:
+    Type: String
+    Default: coach-helper-lambda-dev
+  LambdaArtifact:
+    Type: String
+    Default: teleBot-1.0-SNAPSHOT.jar
   BotLambdaName:
     Type: String
     Default: bot_lambda1
