@@ -14,7 +14,6 @@ pipeline {
                         s3Upload(file:'substacks', bucket:'${CONFIG[params.ENV].deploymentBucket}', path:'infrastructure/')
                         cfnUpdate(stack:'my-stack', params:['DeploymentBucketUrl': '${CONFIG[params.ENV].deploymentBucket}'], file:'parentStack.yml')
                     }
-
                 }
             }
         }
