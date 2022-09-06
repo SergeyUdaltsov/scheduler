@@ -11,8 +11,8 @@ pipeline {
                 script {
                     CONFIG = readYaml file: 'config.yml'
                     withAWS(roleAccount:"${CONFIG[params.ENV].awsAccount}", region:"$params.REGION") {
-                        s3Upload(file:'substacks', bucket:"${CONFIG[params.ENV].deploymentBucket}", path:'infrastructure/')
-                        cfnUpdate(stack:'my-stack', params:['DeploymentBucketUrl': "${CONFIG[params.ENV].deploymentBucket}"], file:'parentStack.yml')
+                        s3Upload(file:'apis.yml', bucket:"${CONFIG[params.ENV].deploymentBucket}", path:'infrastructure/substacks')
+                        cfnUpdate(stack:'my-stack', params:['DeploymentBucketUrl': "${CONFIG[params.ENV].deploymentBucket}"], file:'infrastructure/parentStack.yml')
                     }
                 }
             }
