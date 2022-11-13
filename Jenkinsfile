@@ -18,9 +18,7 @@ pipeline {
         }
         stage("Deploy") {
             steps {
-                if(deployOverride ) {
 
-                }
                 echo "Creating stack..."
                 sh '/bin/bash ${WORKSPACE}/infrastructure/deployResources.sh'
                 echo "Updating lambdas code..."
