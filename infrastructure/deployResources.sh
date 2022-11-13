@@ -16,6 +16,6 @@ echo "Creating deployment bucket..."
 
 aws cloudformation create-stack --stack-name "$stack_name" --template-body file://${WORKSPACE}/infrastructure/parentStack.yml \
 --capabilities CAPABILITY_NAMED_IAM \
---parameters ParameterKey=DeploymentBucketUrl,ParameterValue="$deploymentBucket"
+--parameters ParameterKey=DeploymentBucketUrl,ParameterValue="$deploymentBucket" --region $home_region
 
 $SHELL
