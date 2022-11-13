@@ -1,5 +1,5 @@
 #!/bin/bash
-source deployment.config
+source ${WORKSPACE}/infrastructure/deployment.config
 
 echo "Creating deployment bucket..."
 #aws s3api create-bucket --bucket "$deploymentBucket" --region "$home_region" \
