@@ -9,13 +9,13 @@ Resources:
         - https://${bucketUrl}.s3.eu-central-1.amazonaws.com/roles.yml
         - bucketUrl:
             Ref: DeploymentBucketUrl
-  BucketsSubStack:
-    Type: 'AWS::CloudFormation::Stack'
-    Properties:
-      TemplateURL: !Sub
-        - https://${bucketUrl}.s3.eu-central-1.amazonaws.com/buckets.yml
-        - bucketUrl:
-            Ref: DeploymentBucketUrl
+#  BucketsSubStack:
+#    Type: 'AWS::CloudFormation::Stack'
+#    Properties:
+#      TemplateURL: !Sub
+#        - https://${bucketUrl}.s3.eu-central-1.amazonaws.com/buckets.yml
+#        - bucketUrl:
+#            Ref: DeploymentBucketUrl
   TablesSubStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
