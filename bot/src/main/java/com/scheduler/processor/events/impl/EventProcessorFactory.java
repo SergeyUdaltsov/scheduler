@@ -17,6 +17,7 @@ public class EventProcessorFactory implements IEventProcessorFactory {
     @Override
     public IEventProcessor getEventProcessor(EventType eventType) {
         IEventProcessor processor = processorMap.get(eventType);
+        System.out.println();
         if (processor == null) {
             throw new IllegalArgumentException("Processor not found for event type " + eventType);
         }
