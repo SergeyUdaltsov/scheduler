@@ -14,7 +14,7 @@ echo "Creating deployment bucket..."
 #aws s3 cp ./substacks/roles.yml s3://"$deploymentBucket"/roles.yml
 #aws s3 cp ./substacks/buckets.yml s3://"$deploymentBucket"/buckets.yml
 
-aws cloudformation create-stack --stack-name "$stack_name" --template-body file://"$parent_stack" \
+aws cloudformation create-stack --stack-name "$stack_name" --template-body file://parentStack.yml \
 --capabilities CAPABILITY_NAMED_IAM \
 --parameters ParameterKey=DeploymentBucketUrl,ParameterValue="$deploymentBucket"
 
